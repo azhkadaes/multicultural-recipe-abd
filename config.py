@@ -1,20 +1,31 @@
-from sqlalchemy import create_engine
-import pandas as pd
-import config
-import psycopg2
 from typing import List, Dict, Any
+import psycopg2
+import streamlit as st
 
-# Membuat URL koneksi
-engine = create_engine(f"{config.DB_TYPE}+mysqlconnector://{config.DB_USER}:{config.DB_PASSWORD}@{config.DB_HOST}/{config.DB_NAME}")
-    
-conn = psycopg2.connect(
-        host="localhost",
-        port="5432",
-        user="postgres",
-        password="0",
-        dbname="multicultural_recipe"
-    )
+# Database connection - uses Streamlit secrets on cloud, localhost for local dev
+def get_connection():
+    """Get database connection using Streamlit secrets or local defaults."""
+    try:
+        # Try Streamlit Cloud secrets first
+        secrets = st.secrets["postgres"]
+        return psycopg2.connect(
+            host=secrets["host"],
+            port=secrets.get("port", 5432),
+            user=secrets["user"],
+            password=secrets["password"],
+            dbname=secrets["database"]
+        )
+    except (KeyError, FileNotFoundError):
+        # Fall back to local development settings
+        return psycopg2.connect(
+            host="localhost",
+            port="5432",
+            user="postgres",
+            password="0",
+            dbname="multicultural_recipe"
+        )
 
+conn = get_connection()
 print("Koneksi PostgreSQL berhasil!")
 
 # Membuat cursor
