@@ -68,3 +68,28 @@ CREATE TABLE IF NOT EXISTS public.type_diet_name
     type_diet_name character varying(255) COLLATE pg_catalog."default",
     CONSTRAINT type_diet_name_pkey PRIMARY KEY (type_diet_id)
 )
+
+-- INSERT DML
+-- 1. Insert into type_course_table
+INSERT INTO public.type_course_table (type_course_id, type_course_name)
+VALUES (1, 'Main Course');
+
+-- 2. Insert into type_cuisine_table
+INSERT INTO public.type_cuisine_table (type_cuisine_id, type_cuisine_name)
+VALUES (1, 'Italian');
+
+-- 3. Insert into type_diet_name
+INSERT INTO public.type_diet_name (type_diet_id, type_diet_name)
+VALUES (1, 'Vegetarian');
+
+-- 4. Insert into ingredient_table
+INSERT INTO public.ingredient_table (ingredient_id, ingredient_name)
+VALUES (1, 'Tomato');
+
+-- 5. Insert into recipe_table (depends on type_course, type_cuisine, type_diet)
+INSERT INTO public.recipe_table (recipe_id, recipe_name, type_course_id, type_cuisine_id, type_diet_id)
+VALUES (1, 'Pasta Marinara', 1, 1, 1);
+
+-- 6. Insert into recipe_ingredient_table (depends on recipe and ingredient)
+INSERT INTO public.recipe_ingredient_table (ingredient_id, recipe_id)
+VALUES (1, 1);
