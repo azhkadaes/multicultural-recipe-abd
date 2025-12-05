@@ -1,21 +1,13 @@
-from typing import List, Dict, Any
+from sqlalchemy import create_engine
+import pandas as pd
+import config
 import psycopg2
-import streamlit as st
+from typing import List, Dict, Any
 
-# Koneksi ke database PostgreSQL
-# Menggunakan Streamlit secrets untuk deployment, fallback ke localhost untuk development
-try:
-    # Coba gunakan secrets dari Streamlit Cloud
-    conn = psycopg2.connect(
-        host=st.secrets["postgres"]["host"],
-        port=st.secrets["postgres"]["port"],
-        user=st.secrets["postgres"]["user"],
-        password=st.secrets["postgres"]["password"],
-        dbname=st.secrets["postgres"]["dbname"]
-    )
-except (KeyError, FileNotFoundError):
-    # Fallback ke localhost untuk development lokal
-    conn = psycopg2.connect(
+# Membuat URL koneksi
+engine = create_engine(f"{config.DB_TYPE}+mysqlconnector://{config.DB_USER}:{config.DB_PASSWORD}@{config.DB_HOST}/{config.DB_NAME}")
+    
+conn = psycopg2.connect(
         host="localhost",
         port="5432",
         user="postgres",
