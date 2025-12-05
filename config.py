@@ -1,14 +1,27 @@
 from typing import List, Dict, Any
 import psycopg2
+import streamlit as st
 
 # Koneksi ke database PostgreSQL
-conn = psycopg2.connect(
-    host="localhost",
-    port="5432",          # port default PostgreSQL
-    user="postgres",      # ganti sesuai user PostgreSQL kamu
-    password="0",  # ganti sesuai password PostgreSQL kamu
-    dbname="multicultural_recipe"     # nama database
-)
+# Menggunakan Streamlit secrets untuk deployment, fallback ke localhost untuk development
+try:
+    # Coba gunakan secrets dari Streamlit Cloud
+    conn = psycopg2.connect(
+        host=st.secrets["postgres"]["host"],
+        port=st.secrets["postgres"]["port"],
+        user=st.secrets["postgres"]["user"],
+        password=st.secrets["postgres"]["password"],
+        dbname=st.secrets["postgres"]["dbname"]
+    )
+except (KeyError, FileNotFoundError):
+    # Fallback ke localhost untuk development lokal
+    conn = psycopg2.connect(
+        host="localhost",
+        port="5432",
+        user="postgres",
+        password="0",
+        dbname="multicultural_recipe"
+    )
 
 print("Koneksi PostgreSQL berhasil!")
 
